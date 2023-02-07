@@ -7,3 +7,4 @@ Members:
   Front-end: Angela Ung & Sophia Huerta
   Back-end: Jeffery Drew & Brayden Cheek
 </pre>
+.
