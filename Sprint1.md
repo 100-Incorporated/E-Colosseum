@@ -13,6 +13,7 @@ As an individual who wants to wants to find new way to complete tasks and connec
 4) A website that can be used to improve cognitive skills
 5) A website with original games that are simple enough but unique to improve cognitive skills
 6) A website that has an incentive to use it and continue to use it
+7) A website that has an 'offline' option (an option where you can play as a guest but you do not get a reward)
 ## Which ones were successfully completed
 1) A website that can provide 5+ brain games seems like an attainable goal.
 3) We are implementing blockchain currency in hopes that users can bet against each other and duel with their cognitive skills.
