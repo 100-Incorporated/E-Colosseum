@@ -1,4 +1,4 @@
-# Sprint0
+# E-Colosseum
 Project basis and sandbox for full stack trial
 <pre>
 Project Name: eColosseum
