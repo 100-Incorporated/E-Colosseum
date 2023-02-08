@@ -12,9 +12,11 @@ As an individual who wants to wants to find new way to complete tasks and connec
 3) A website where users can bet wagers and compete against others.
 4) A website that can be used to improve cognitive skills
 5) A website with original games that are simple enough but unique to improve cognitive skills
+6) A website that has an incentive to use it and continue to use it
 ## Which ones were successfully completed
 1) A website that can provide 5+ brain games seems like an attainable goal.
 3) We are implementing blockchain currency in hopes that users can bet against each other and duel with their cognitive skills.
 4) We hope that using our brain games to practice will augment the user's cognitive skills.
 ## Which ones didn't and why?
-2) Gambling is illegal.
+1) Gambling is illegal.
+2) Creating an offline wallet that does not connect to any bank or has any licenses is illegal
