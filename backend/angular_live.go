@@ -7,7 +7,7 @@ import (
 )
 
 func getOrigin() *url.URL {
-	origin, _ := url.Parse("http://localhost:4200")
+	origin, _ := url.Parse("http://localhost:80")
 	return origin
 }
 
