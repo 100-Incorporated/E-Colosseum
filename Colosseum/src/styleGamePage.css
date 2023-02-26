@@ -1,0 +1,16 @@
+body{ 
+    background-color: powderblue;
+}
+h1{ 
+    text-align: left;
+    font-size: 75px;
+    font-weight: 700;
+    line-height: 0%;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; 
+}
+h2{ 
+    text-align: left;
+    font-size: 60px;
+    line-height: 7px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; 
+}
