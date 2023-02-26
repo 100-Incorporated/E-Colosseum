@@ -1,10 +1,49 @@
     /* You can add global styles to this file, and also import other style files */
     body {
         background-color: powderblue;
+        font-family: Arial;
       }
-      h1 {
-        color: blue;
-      }
-      p {
-        color: red;
-      }
+    h1 {
+      font-size: 120px;
+      font-weight: bold;
+      color: rgb(0, 0, 43);
+    } 
+    h3 {
+      height: 30px;
+      font-size: 30px;
+      color: rgb(41, 41, 41);
+      
+    } 
+    .loginpage {  
+      height: 50px;
+      width: 100px;
+      border-radius: 5%;
+      border: none;
+      color: #f3f3f3;
+      background-color: rgb(48, 48, 97);
+      font-weight: bold;
+      font-size: 20px;
+      margin: 1rem;
+    }
+    .signuppage {  
+      height: 50px;
+      width: 100px;
+      border-radius: 5%;
+      border: none;
+      color: #f3f3f3;
+      background-color: rgb(48, 48, 97);
+      font-weight: bold;
+      font-size: 20px;   
+      margin: 1rem;
+    }
+    .guestpage {  
+      height: 50px;
+      width: 200px;
+      border-radius: 5%;
+      border: none;
+      color: #f3f3f3;
+      background-color: rgb(48, 48, 97);
+      font-weight: bold;
+      font-size: 20px;  
+      margin: 1rem; 
+    }
