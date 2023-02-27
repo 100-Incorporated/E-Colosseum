@@ -1,12 +1,15 @@
     /* You can add global styles to this file, and also import other style files */
     body {
-        background-color: powderblue;
-        font-family: Arial;
-      }
+      font-family: 'Roboto', sans-serif;
+      background-image: url("gladiator.png"); 
+      background-size: auto;
+      background-size: 100%;
+
+    }  
     h1 {
       font-size: 120px;
       font-weight: bold;
-      color: rgb(0, 0, 43);
+      color: rgb(98, 10, 16);
     } 
     h3 {
       height: 30px;
@@ -24,7 +27,9 @@
       font-weight: bold;
       font-size: 50px;
       margin: 1rem;
+
     }
+    
     .signuppage {  
       height: 100px;
       width: 100px;
