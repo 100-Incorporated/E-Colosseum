@@ -6,19 +6,21 @@
       background-size: 100%;
 
     }  
+    /* index.html */
     h1 {
       font-size: 120px;
       font-weight: bold;
       color: rgb(98, 10, 16);
+      text-shadow: 2px 4px 4px rgba(46, 0, 0, 0.6);
     } 
     h3 {
       height: 30px;
       font-weight: bold;
       font-size: 30px;
       color: rgb(0, 0, 0);
-      
+      text-shadow: 2px 4px 4px rgba(46, 0, 0, 0.6);
     } 
-    .loginpage {  
+    .entrypage {  
       height: 500px;
       width: 100px;
       border-radius: 5%;
@@ -29,29 +31,21 @@
       font-size: 40px;
       margin: 2rem;
       padding: 1rem;
+      line-height: 100px;
     }
-    
-    .signuppage {  
-      height: 200px;
-      width: 100px;
-      border-radius: 5%;
-      border: none;
-      color: #f3f3f3;
-      background-color: rgb(98, 10, 16);
+
+    /* login.html */
+    t1 {
+      font-size: 30px;
       font-weight: bold;
-      font-size: 40px;   
-      margin: 2rem;
-      padding: 1rem;
+      color: rgb(98, 10, 16);
+      text-shadow: 2px 4px 4px rgba(46, 0, 0, 0.6);
+      padding: 12px 0 0 0;
+      display: inline-block;
     }
-    .guestpage {
-      height: 200px;
-      width: 500px;
-      border-radius: 5%;
-      border: none;
-      color: #f3f3f3;
-      background-color: rgb(98, 10, 16);
-      font-weight: bold;
-      font-size: 30px;  
-      line-height: 150px;
-      padding: 1rem; 
+    input {
+      padding: 8px 20px;
+      margin: 12px 8px;
+      border: 1px solid #330000;
+      border-radius: 8px;
     }
