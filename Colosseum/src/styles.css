@@ -15,35 +15,35 @@
       
     } 
     .loginpage {  
-      height: 50px;
+      height: 100px;
       width: 100px;
       border-radius: 5%;
       border: none;
       color: #f3f3f3;
       background-color: rgb(48, 48, 97);
       font-weight: bold;
-      font-size: 20px;
+      font-size: 50px;
       margin: 1rem;
     }
     .signuppage {  
-      height: 50px;
+      height: 100px;
       width: 100px;
       border-radius: 5%;
       border: none;
       color: #f3f3f3;
       background-color: rgb(48, 48, 97);
       font-weight: bold;
-      font-size: 20px;   
+      font-size: 50px;   
       margin: 1rem;
     }
     .guestpage {  
-      height: 50px;
+      height: 100px;
       width: 200px;
       border-radius: 5%;
       border: none;
       color: #f3f3f3;
       background-color: rgb(48, 48, 97);
       font-weight: bold;
-      font-size: 20px;  
+      font-size: 50px;  
       margin: 1rem; 
     }
