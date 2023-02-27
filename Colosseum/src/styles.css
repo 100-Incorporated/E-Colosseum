@@ -18,37 +18,39 @@
       
     } 
     .loginpage {  
-      height: 100px;
+      height: 500px;
       width: 100px;
       border-radius: 5%;
       border: none;
       color: #f3f3f3;
-      color: rgb(98, 10, 16);
+      background-color: rgb(98, 10, 16);
       font-weight: bold;
-      font-size: 50px;
-      margin: 1rem;
-
+      font-size: 40px;
+      margin: 2rem;
+      padding: 1rem;
     }
     
     .signuppage {  
-      height: 100px;
+      height: 200px;
       width: 100px;
       border-radius: 5%;
       border: none;
       color: #f3f3f3;
-      color: rgb(98, 10, 16);
+      background-color: rgb(98, 10, 16);
       font-weight: bold;
-      font-size: 50px;   
-      margin: 1rem;
+      font-size: 40px;   
+      margin: 2rem;
+      padding: 1rem;
     }
-    .guestpage {  
-      height: 100px;
-      width: 200px;
+    .guestpage {
+      height: 200px;
+      width: 500px;
       border-radius: 5%;
       border: none;
       color: #f3f3f3;
-      color: rgb(98, 10, 16);
+      background-color: rgb(98, 10, 16);
       font-weight: bold;
       font-size: 50px;  
-      margin: 1rem; 
+      line-height: 150px;
+      padding: 1rem; 
     }
