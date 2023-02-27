@@ -1,16 +1,20 @@
 body{ 
-    background-color: powderblue;
+    background-image: url("gladiator.png");
+    background-position: auto;
+    background-size: 100%;  
 }
+
 h1{ 
     text-align: left;
+    font-weight: bold;
     font-size: 75px;
     font-weight: 700;
     line-height: 0%;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; 
-}
+    font-family: 'Roboto', sans-serif;}
+    b
 h2{ 
     text-align: left;
     font-size: 60px;
     line-height: 7px;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; 
+    font-family: 'Roboto', sans-serif;
 }
