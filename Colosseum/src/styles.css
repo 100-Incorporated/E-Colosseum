@@ -13,8 +13,9 @@
     } 
     h3 {
       height: 30px;
+      font-weight: bold;
       font-size: 30px;
-      color: rgb(41, 41, 41);
+      color: rgb(0, 0, 0);
       
     } 
     .loginpage {  
