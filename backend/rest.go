@@ -36,7 +36,7 @@ func GetUserHandler(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "Not Found", http.StatusNotFound)
 }
 
-// CreateUserHandler creates a new user item
+// CreateUserHandler creates a new user
 func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
 	var user User
 	_ = json.NewDecoder(r.Body).Decode(&user)
