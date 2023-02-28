@@ -1,25 +1,27 @@
 package main
 
 import (
+	"database/sql"
 	"net/http"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 type User struct {
-	ID       string `json:"id"`
+	ID       int    `json:"id"`
 	Username string `json:"username"`
 	Rank     int    `json:"rank"`
 }
 
-// Users slice to test functionality
-var users = []User{
-	{ID: "1", Username: "JohnDoe", Rank: 1},
-	{ID: "2", Username: "JaneDoe", Rank: 2},
-}
-
 func main() {
+	db, err := sql.Open("sqlite3", "./users.db")
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
 	router := gin.Default()
 
 	// Enable on release?
@@ -41,43 +43,57 @@ func main() {
 	router.Use(cors.New(config))
 
 	// Routes
-	router.GET("/users", getUsers)
-	router.GET("/users/:id", getUserByID)
-	router.POST("/users", postUser)
-
-	router.Run("localhost:8081")
-}
-
-// getUsers returns a slice of all users as JSON
-func getUsers(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, users)
-}
-
-// postUser creates a new user from JSON received in the request body
-func postUser(c *gin.Context) {
-	var newUser User
-
-	// Call BindJSON to bind the received JSON to
-	// newUser.
-	if err := c.BindJSON(&newUser); err != nil {
-		return
-	}
-
-	users = append(users, newUser)
-	c.IndentedJSON(http.StatusCreated, newUser)
-}
-
-// getUserByID returns a single user based on their id
-func getUserByID(c *gin.Context) {
-	id := c.Param("id")
-
-	// Loop over the list of users, looking for
-	// a user whose ID value matches the parameter.
-	for _, a := range users {
-		if a.ID == id {
-			c.IndentedJSON(http.StatusOK, a)
+	router.GET("/users", func(c *gin.Context) {
+		rows, err := db.Query("SELECT * FROM users")
+		if err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
 			return
 		}
-	}
-	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "user not found"})
+		defer rows.Close()
+
+		users := []User{}
+		for rows.Next() {
+			var user User
+			err := rows.Scan(&user.ID, &user.Username, &user.Rank)
+			if err != nil {
+				c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
+				return
+			}
+			users = append(users, user)
+		}
+
+		c.IndentedJSON(http.StatusOK, users)
+	})
+
+	router.GET("/users/:id", func(c *gin.Context) {
+		var user User
+		err := db.QueryRow("SELECT * FROM users WHERE id=?", c.Param("id")).Scan(&user.ID, &user.Username, &user.Rank)
+		if err == sql.ErrNoRows {
+			c.IndentedJSON(http.StatusNotFound, gin.H{"message": "user not found"})
+			return
+		} else if err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
+			return
+		}
+
+		c.IndentedJSON(http.StatusOK, user)
+	})
+
+	router.POST("/users", func(c *gin.Context) {
+		var newUser User
+		if err := c.BindJSON(&newUser); err != nil {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid request payload"})
+			return
+		}
+
+		_, err := db.Exec("INSERT INTO users (username, rank) VALUES (?, ?)", newUser.Username, newUser.Rank)
+		if err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
+			return
+		}
+
+		c.IndentedJSON(http.StatusCreated, newUser)
+	})
+
+	router.Run("localhost:8081")
 }
