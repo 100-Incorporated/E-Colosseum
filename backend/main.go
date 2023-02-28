@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,9 +21,27 @@ var users = []User{
 
 func main() {
 	router := gin.Default()
+
+	// Enable on release?
+	// gin.SetMode(gin.ReleaseMode)
+
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://localhost:8081"}
+	config.AllowMethods = []string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}
+	config.AllowHeaders = []string{"X-Requested-With", "Content-Type", "Authorization",
+		"DNT", "Keep-Alive", "User-Agent", "X-Requested-With", "If-Modified-Since",
+		"Cache-Control", "Content-Range", "Range"}
+	config.ExposeHeaders = []string{"DNT", "Keep-Alive", "User-Agent",
+		"X-Requested-With", "If-Modified-Since", "Cache-Control",
+		"Content-Type", "Content-Range", "Range", "Content-Disposition"}
+	config.AllowCredentials = true
+	config.MaxAge = 86400
+
+	router.Use(cors.New(config))
+
 	router.GET("/users", getUsers)
 
-	router.Run(":8080")
+	router.Run("localhost:8081")
 }
 
 // getUsers returns a slice of all users as JSON
