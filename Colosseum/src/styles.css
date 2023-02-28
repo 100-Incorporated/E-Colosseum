@@ -49,3 +49,13 @@
       border: 1px solid #330000;
       border-radius: 8px;
     }
+
+    /* signup.html */
+    t2 {
+      font-size: 30px;
+      font-weight: bold;
+      color: rgb(98, 10, 16);
+      text-shadow: 2px 4px 4px rgba(46, 0, 0, 0.6);
+      padding: 2px 0 0 0;
+      display: inline-block;
+    }
