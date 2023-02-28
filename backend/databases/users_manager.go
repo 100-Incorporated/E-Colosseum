@@ -35,6 +35,9 @@ func main() {
 	
 	//select all users
 	rows, err := db.Query("SELECT * FROM users")
+	if err != nil {
+		panic(err)
+	}
 	
 	//for each row, print user info
 	for rows.Next() {
