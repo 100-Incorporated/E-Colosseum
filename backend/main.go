@@ -1,22 +1,31 @@
 package main
 
 import (
-	"log"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
+type User struct {
+	ID       string `json:"id"`
+	Username string `json:"username"`
+	Rank     int    `json:"rank"`
+}
+
+// Users slice to test functionality
+var users = []User{
+	{ID: "1", Username: "JohnDoe", Rank: 1},
+	{ID: "2", Username: "JaneDoe", Rank: 2},
+}
+
 func main() {
+	router := gin.Default()
+	router.GET("/users", getUsers)
 
-	// This is to test the backend GET function, open http://localhost:80/users/1 in your browser
-	users = append(users, User{
-		ID:       1,
-		Username: "JohnDoe",
-		Rank:     1,
-	})
+	router.Run(":8080")
+}
 
-	host := "127.0.0.1:80"
-	if err := http.ListenAndServe(host, httpHandler()); err != nil {
-		log.Fatalf("Failed to listen on %s: %v", host, err)
-	}
-
+// getUsers returns a slice of all users as JSON
+func getUsers(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, users)
 }
