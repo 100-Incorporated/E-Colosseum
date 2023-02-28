@@ -1,0 +1,9 @@
+added routing between pages so it was not just locally linked, since that wasn't working with angular
+each new page should have a new component:
+> start in Sprint1/Colosseum directory and run "ng g c <component name>"
+> this will automatically add the component to the app.module.ts file
+
+
+link the new component html file to ../../styles.css, so we can keep everything in one file
+
+
