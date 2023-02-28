@@ -6,15 +6,17 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+var PATH string = "./users.db"
+
 type User struct {
 	Id       int
 	Username string
 	Password     string
 }
 
-func main() {
+func create_table() {
 	//open database
-	db, err := sql.Open("sqlite3", "./users.db")
+	db, err := sql.Open("sqlite3", PATH)
 	if err != nil {
 		panic(err)
 	}
@@ -25,14 +27,49 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	
-	//insert a user username Jeff password 123
-	db.Exec("INSERT INTO users (username, password) VALUES (?, ?)", "Jeff", "123")
-	
 
-	//insert a user username Brayden password 456
-	db.Exec("INSERT INTO users (username, password) VALUES (?, ?)", "Brayden", "456")
-	
+}
+
+func clear_table() {
+	//open database
+	db, err := sql.Open("sqlite3", PATH)
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
+	//clear table
+	_, err = db.Exec("DELETE FROM users")
+	if err != nil {
+		panic(err)
+	}
+}
+
+
+func add_user(username string, password string) {
+	//open database
+	db, err := sql.Open("sqlite3", PATH)
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
+	//insert user
+	_, err = db.Exec("INSERT INTO users (username, password) VALUES (?, ?)", username, password)
+	if err != nil {
+		panic(err)
+	}
+}
+
+
+func show_users(path string) {
+	//open database
+	db, err := sql.Open("sqlite3", PATH)
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
 	//select all users
 	rows, err := db.Query("SELECT * FROM users")
 	if err != nil {
@@ -45,7 +82,15 @@ func main() {
 		rows.Scan(&user.Id, &user.Username, &user.Password)
 		fmt.Println(user.Id, user.Username, user.Password)
 	}
+}
 
+
+func main() {
+	clear_table()
+	create_table()
+	add_user("root", "root")
+	add_user("admin", "admin")
+	show_users(PATH)
 }
 
 
