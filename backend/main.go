@@ -25,6 +25,7 @@ func main() {
 	// Enable on release?
 	// gin.SetMode(gin.ReleaseMode)
 
+	//CORS middleware
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"http://localhost:8081"}
 	config.AllowMethods = []string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}
@@ -39,7 +40,9 @@ func main() {
 
 	router.Use(cors.New(config))
 
+	// Routes
 	router.GET("/users", getUsers)
+	router.POST("/users", postUser)
 
 	router.Run("localhost:8081")
 }
@@ -47,4 +50,18 @@ func main() {
 // getUsers returns a slice of all users as JSON
 func getUsers(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, users)
+}
+
+// postUser creates a new user from JSON received in the request body
+func postUser(c *gin.Context) {
+	var newUser User
+
+	// Call BindJSON to bind the received JSON to
+	// newUser.
+	if err := c.BindJSON(&newUser); err != nil {
+		return
+	}
+
+	users = append(users, newUser)
+	c.IndentedJSON(http.StatusCreated, newUser)
 }
