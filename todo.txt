@@ -1,0 +1,6 @@
+Backend
+write unit test to check stock order Submission
+write unit test for player creation
+    test for player gain money/win
+    test for player lose money/lose
+

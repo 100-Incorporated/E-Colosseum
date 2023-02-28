@@ -1,0 +1,33 @@
+    /* You can add global styles to this file, and also import other style files */
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-image: url("gladiator.png"); 
+        background-size: auto;
+        background-size: 100%;
+  
+      }  
+      h1 {
+        font-size: 80px;
+        font-weight: bold;
+        color: rgb(98, 10, 16);
+        text-shadow: 2px 4px 4px rgba(46, 0, 0, 0.6);
+      } 
+      h3 {
+        height: 20px;
+        font-weight: bold;
+        font-size: 30px;
+        color: rgb(0, 0, 0);
+        text-shadow: 2px 4px 4px rgba(46, 0, 0, 0.6);
+      }
+      .backpage {  
+        width: 100px;
+        border-radius: 5%;
+        border: none;
+        color: #f3f3f3;
+        background-color: rgb(98, 10, 16);
+        font-weight: bold;
+        font-size: 25px;
+        margin: 1rem;
+        padding: 10px;
+        line-height: 100px;
+      }
