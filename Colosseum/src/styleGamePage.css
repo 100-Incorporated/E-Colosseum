@@ -9,13 +9,10 @@ h1{
     font-weight: 700;
     line-height: 0%;
     font-family: 'Roboto', sans-serif;}
-    b
+    
 h2{ 
     text-align: left;
     font-size: 60px;
-    line-height: 7px;
+    line-height: 20px;
     font-family: 'Roboto', sans-serif;
-}
-.boxed{ 
-    border: 5px green;
 }
