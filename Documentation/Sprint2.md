@@ -11,3 +11,10 @@ There should also be error handling for invalid stock ticker inputs, but for now
 
 ### Database API
 We will be using a SQLite database to store player information. We need persistence for scores, "cash balance", and basic user information. This database will be seperate from that of the user's stock portfolio. 
+
+# Sprint 2 Frontend
+
+## Primary Updates
+To support the functionality of maintaining stock market trading, our opening page gives users the option to login or signup. There is also a prompt for the user to play as guest, if the user chooses to compete in cognitive brain games without the pressure of trading. After the user chooses one of the three options, they can access the homepage. This is where the user can access a variety of brain games and augment their understanding of stock market trading.
+
+## Unit Tests / Cypress Tests
