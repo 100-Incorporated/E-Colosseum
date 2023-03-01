@@ -24,6 +24,11 @@
             "request": "launch",
             "mode": "auto",
             "program": "${fileDirname}",
+            "env": {},
+            "args": [],
+            "showLog": true,
+            "debugAdapter": "dlv-dap",
+            "trace": "verbose"            
         }
     ]
 }

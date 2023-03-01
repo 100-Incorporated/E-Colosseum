@@ -12,16 +12,19 @@ import (
 type User struct {
 	ID       int    `json:"id"`
 	Username string `json:"username"`
-	Birthday     string    `json:"birthday"`
+	Password string `json:"password"`
+	Birthday string `json:"birthday"`
 }
 
 func main() {
+	// Stop the program if the database connection fails
 	db, err := sql.Open("sqlite3", "./databases/users.db")
 	if err != nil {
 		panic(err)
 	}
 	defer db.Close()
 
+	// Using default middleware (logger and recovery)
 	router := gin.Default()
 
 	// Enable on release?
@@ -43,6 +46,7 @@ func main() {
 	router.Use(cors.New(config))
 
 	// Routes
+	// GET all users
 	router.GET("/users", func(c *gin.Context) {
 		rows, err := db.Query("SELECT * FROM users")
 		if err != nil {
@@ -54,7 +58,7 @@ func main() {
 		users := []User{}
 		for rows.Next() {
 			var user User
-			err := rows.Scan(&user.ID, &user.Username, &user.Birthday)
+			err := rows.Scan(&user.ID, &user.Username, &user.Password, &user.Birthday)
 			if err != nil {
 				c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
 				return
@@ -65,9 +69,10 @@ func main() {
 		c.IndentedJSON(http.StatusOK, users)
 	})
 
+	// GET a user by ID
 	router.GET("/users/:id", func(c *gin.Context) {
 		var user User
-		err := db.QueryRow("SELECT * FROM users WHERE id=?", c.Param("id")).Scan(&user.ID, &user.Username, &user.Birthday)
+		err := db.QueryRow("SELECT * FROM users WHERE id=?", c.Param("id")).Scan(&user.ID, &user.Username, &user.Password, &user.Birthday)
 		if err == sql.ErrNoRows {
 			c.IndentedJSON(http.StatusNotFound, gin.H{"message": "user not found"})
 			return
@@ -79,6 +84,7 @@ func main() {
 		c.IndentedJSON(http.StatusOK, user)
 	})
 
+	// POST a new user
 	router.POST("/users", func(c *gin.Context) {
 		var newUser User
 		if err := c.BindJSON(&newUser); err != nil {
@@ -86,13 +92,102 @@ func main() {
 			return
 		}
 
-		_, err := db.Exec("INSERT INTO users (username, rank) VALUES (?, ?)", newUser.Username, newUser.Birthday)
+		// note that the value of the id field is automatically created by the database
+		_, err := db.Exec("INSERT INTO users (username, password, birthday) VALUES (?, ?, ?)", newUser.Username, newUser.Password, newUser.Birthday)
 		if err != nil {
 			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
 			return
 		}
 
 		c.IndentedJSON(http.StatusCreated, newUser)
+	})
+
+	// DELETE a user by ID
+	router.DELETE("/users/:id", func(c *gin.Context) {
+		userID := c.Param("id")
+		var count int
+		err := db.QueryRow("SELECT COUNT(*) FROM users WHERE id = ?", userID).Scan(&count)
+		if err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
+			return
+		}
+
+		if count == 0 {
+			c.IndentedJSON(http.StatusNotFound, gin.H{"message": "User not found"})
+			return
+		}
+
+		_, err = db.Exec("DELETE FROM users WHERE id = ?", userID)
+		if err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
+			return
+		}
+
+		c.IndentedJSON(http.StatusOK, gin.H{"message": "User deleted successfully"})
+	})
+
+	// PUT a user by ID
+	router.PUT("/users/:id", func(c *gin.Context) {
+		// The user variable just exists to store the result of the query, so the scan output can be stored in err
+		var user User
+		err := db.QueryRow("SELECT * FROM users WHERE id=?", c.Param("id")).Scan(&user.ID, &user.Username, &user.Password, &user.Birthday)
+		if err == sql.ErrNoRows {
+			c.IndentedJSON(http.StatusNotFound, gin.H{"message": "User not found"})
+			return
+		} else if err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
+			return
+		}
+
+		var updatedUser User
+		if err := c.BindJSON(&updatedUser); err != nil {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid request payload"})
+			return
+		}
+
+		_, err = db.Exec("UPDATE users SET username=?, password=?, birthday=? WHERE id=?", updatedUser.Username, updatedUser.Password, updatedUser.Birthday, c.Param("id"))
+		if err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
+			return
+		}
+
+		c.IndentedJSON(http.StatusOK, updatedUser)
+	})
+
+	router.PATCH("/users/:id", func(c *gin.Context) {
+		var user User
+		err := db.QueryRow("SELECT * FROM users WHERE id=?", c.Param("id")).Scan(&user.ID, &user.Username, &user.Password, &user.Birthday)
+		if err == sql.ErrNoRows {
+			c.IndentedJSON(http.StatusNotFound, gin.H{"message": "user not found"})
+			return
+		} else if err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
+			return
+		}
+
+		var updatedUser User
+		if err := c.BindJSON(&updatedUser); err != nil {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid request payload"})
+			return
+		}
+		// Set fields that are not provided to their current values
+		if updatedUser.Username == "" {
+			updatedUser.Username = user.Username
+		}
+		if updatedUser.Password == "" {
+			updatedUser.Password = user.Password
+		}
+		if updatedUser.Birthday == "" {
+			updatedUser.Birthday = user.Birthday
+		}
+
+		_, err = db.Exec("UPDATE users SET username=?, password=?, birthday=? WHERE id=?", updatedUser.Username, updatedUser.Password, updatedUser.Birthday, c.Param("id"))
+		if err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
+			return
+		}
+
+		c.IndentedJSON(http.StatusOK, updatedUser)
 	})
 
 	router.Run("localhost:8080")
