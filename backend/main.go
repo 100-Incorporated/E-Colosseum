@@ -43,7 +43,7 @@ func main() {
 	config.AllowCredentials = true
 	config.MaxAge = 86400
 
-	router.Use(cors.New(config))
+	// router.Use(cors.New(config))
 
 	// Routes
 	// GET all users
@@ -74,7 +74,7 @@ func main() {
 		var user User
 		err := db.QueryRow("SELECT * FROM users WHERE id=?", c.Param("id")).Scan(&user.ID, &user.Username, &user.Password, &user.Birthday)
 		if err == sql.ErrNoRows {
-			c.IndentedJSON(http.StatusNotFound, gin.H{"message": "user not found"})
+			c.IndentedJSON(http.StatusNotFound, gin.H{"message": "User not found"})
 			return
 		} else if err != nil {
 			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
@@ -93,11 +93,15 @@ func main() {
 		}
 
 		// note that the value of the id field is automatically created by the database
-		_, err := db.Exec("INSERT INTO users (username, password, birthday) VALUES (?, ?, ?)", newUser.Username, newUser.Password, newUser.Birthday)
+		result, err := db.Exec("INSERT INTO users (username, password, birthday) VALUES (?, ?, ?)", newUser.Username, newUser.Password, newUser.Birthday)
 		if err != nil {
 			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
 			return
 		}
+
+		// set newUser id to the id of the newly created user (otherwise it will be 0)
+		var id, _ = result.LastInsertId()
+		newUser.ID = int(id)
 
 		c.IndentedJSON(http.StatusCreated, newUser)
 	})
@@ -145,11 +149,15 @@ func main() {
 			return
 		}
 
-		_, err = db.Exec("UPDATE users SET username=?, password=?, birthday=? WHERE id=?", updatedUser.Username, updatedUser.Password, updatedUser.Birthday, c.Param("id"))
+		result, err := db.Exec("UPDATE users SET username=?, password=?, birthday=? WHERE id=?", updatedUser.Username, updatedUser.Password, updatedUser.Birthday, c.Param("id"))
 		if err != nil {
 			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
 			return
 		}
+
+		// set updatedUser id to the id of the newly created user
+		var id, _ = result.LastInsertId()
+		updatedUser.ID = int(id)
 
 		c.IndentedJSON(http.StatusOK, updatedUser)
 	})
@@ -181,11 +189,15 @@ func main() {
 			updatedUser.Birthday = user.Birthday
 		}
 
-		_, err = db.Exec("UPDATE users SET username=?, password=?, birthday=? WHERE id=?", updatedUser.Username, updatedUser.Password, updatedUser.Birthday, c.Param("id"))
+		result, err := db.Exec("UPDATE users SET username=?, password=?, birthday=? WHERE id=?", updatedUser.Username, updatedUser.Password, updatedUser.Birthday, c.Param("id"))
 		if err != nil {
 			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
 			return
 		}
+
+		// set updatedUser id to the id of the newly created user
+		var id, _ = result.LastInsertId()
+		updatedUser.ID = int(id)
 
 		c.IndentedJSON(http.StatusOK, updatedUser)
 	})
