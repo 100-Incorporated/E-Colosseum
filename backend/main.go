@@ -12,11 +12,11 @@ import (
 type User struct {
 	ID       int    `json:"id"`
 	Username string `json:"username"`
-	Rank     int    `json:"rank"`
+	Birthday     string    `json:"birthday"`
 }
 
 func main() {
-	db, err := sql.Open("sqlite3", "./users.db")
+	db, err := sql.Open("sqlite3", "./databases/users.db")
 	if err != nil {
 		panic(err)
 	}
@@ -54,7 +54,7 @@ func main() {
 		users := []User{}
 		for rows.Next() {
 			var user User
-			err := rows.Scan(&user.ID, &user.Username, &user.Rank)
+			err := rows.Scan(&user.ID, &user.Username, &user.Birthday)
 			if err != nil {
 				c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
 				return
@@ -67,7 +67,7 @@ func main() {
 
 	router.GET("/users/:id", func(c *gin.Context) {
 		var user User
-		err := db.QueryRow("SELECT * FROM users WHERE id=?", c.Param("id")).Scan(&user.ID, &user.Username, &user.Rank)
+		err := db.QueryRow("SELECT * FROM users WHERE id=?", c.Param("id")).Scan(&user.ID, &user.Username, &user.Birthday)
 		if err == sql.ErrNoRows {
 			c.IndentedJSON(http.StatusNotFound, gin.H{"message": "user not found"})
 			return
@@ -86,7 +86,7 @@ func main() {
 			return
 		}
 
-		_, err := db.Exec("INSERT INTO users (username, rank) VALUES (?, ?)", newUser.Username, newUser.Rank)
+		_, err := db.Exec("INSERT INTO users (username, rank) VALUES (?, ?)", newUser.Username, newUser.Birthday)
 		if err != nil {
 			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
 			return
