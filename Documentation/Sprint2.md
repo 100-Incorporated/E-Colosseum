@@ -12,6 +12,8 @@ There should also be error handling for invalid stock ticker inputs, but for now
 ### Database API
 We will be using a SQLite database to store player information. We need persistence for scores, "cash balance", and basic user information. This database will be seperate from that of the user's stock portfolio. 
 
+The documentation for this API is detailed in the OpenAPI 3.0 specification in the backend folder, or alternatively can be viewed with [Swagger](https://app.swaggerhub.com/apis/b-cheek/E-Colosseum-API/1.0.0)
+
 # Sprint 2 Frontend
 
 ## Primary Updates
