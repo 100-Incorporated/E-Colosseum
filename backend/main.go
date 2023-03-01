@@ -29,7 +29,7 @@ func main() {
 
 	//CORS middleware
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://localhost:8081"}
+	config.AllowOrigins = []string{"http://localhost:8080"}
 	config.AllowMethods = []string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}
 	config.AllowHeaders = []string{"X-Requested-With", "Content-Type", "Authorization",
 		"DNT", "Keep-Alive", "User-Agent", "X-Requested-With", "If-Modified-Since",
@@ -95,5 +95,5 @@ func main() {
 		c.IndentedJSON(http.StatusCreated, newUser)
 	})
 
-	router.Run("localhost:8081")
+	router.Run("localhost:8080")
 }
