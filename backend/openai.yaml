@@ -20,12 +20,29 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/UserResponse'
+              examples:
+                users:
+                  value:
+                    - id: 1
+                      username: alice
+                      password: password
+                      birthday: 1990-01-01
+                    - id: 2
+                      username: bob
+                      password: password
+                      birthday: 1995-01-01
         '500':
           description: Internal server error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    error:
+                      code: 500
+                      message: Internal server error
 
     post:
       summary: Create a new user
@@ -36,6 +53,12 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/User'
+            examples:
+              user:
+                value:
+                  username: alice
+                  password: password
+                  birthday: 1990-01-01
       responses:
         '201':
           description: Created
@@ -43,18 +66,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserResponse'
+              examples:
+                user:
+                  value:
+                    id: 1
+                    username: alice
+                    password: password
+                    birthday: 1990-01-01
         '400':
           description: Invalid request payload
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    error:
+                      code: 400
+                      message: Invalid request payload
         '500':
           description: Internal server error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    error:
+                      code: 500
+                      message: Internal server error
 
   /users/{id}:
     get:
@@ -73,18 +115,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserResponse'
+              examples:
+                user:
+                  value:
+                    id: 1
+                    username: alice
+                    password: password
+                    birthday: 1990-01-01
         '404':
           description: User not found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    error:
+                      code: 404
+                      message: User not found
         '500':
           description: Internal server error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    error:
+                      code: 500
+                      message: Internal server error
 
     put:
       summary: Update a user by ID
@@ -102,6 +163,12 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/User'
+            examples:
+              user:
+                value:
+                  username: Bob
+                  password: newPass
+                  birthday: 2000-06-06
       responses:
         '200':
           description: OK
@@ -109,18 +176,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserResponse'
+              examples:
+                user:
+                  value:
+                    id: 1
+                    username: alice
+                    password: password
+                    birthday: 1990-01-01
         '404':
           description: User not found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    error:
+                      code: 404
+                      message: User not found
         '500':
           description: Internal server error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    error:
+                      code: 500
+                      message: Internal server error
 
     delete:
       summary: Delete a user by ID
@@ -138,18 +224,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Message'
+              examples:
+                message: 
+                  value:
+                    message: User deleted successfully
         '404':
           description: User not found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    error:
+                      code: 404
+                      message: User not foudn            
         '500':
           description: Internal server error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    error:
+                      code: 500
+                      message: Internal server error
     patch:
       summary: Update a user by ID
       parameters:
@@ -165,6 +267,17 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/User'
+            examples:
+              userFullLogin:
+                value:
+                  username: bob
+                  password: newPass 
+              userOnlyName:
+                value:
+                  username: bob
+              userOnlyPass:
+                value:
+                  password: newPass 
       responses:
         '200':
           description: Successfully updated the user
@@ -172,24 +285,49 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserResponse'
+              examples:
+                user:
+                  value:
+                    id: 1
+                    username: alice
+                    password: password
+                    birthday: 1990-01-01
         '400':
           description: Invalid request payload
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    error:
+                      code: 400
+                      message: Invalid request payload
         '404':
           description: User not found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    error:
+                      code: 404
+                      message: User not found
         '500':
           description: Internal Server Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+              examples:
+                error:
+                  value:
+                    error:
+                      code: 500
+                      message: Internal server error
 components:
   schemas:
     User:
