@@ -16,14 +16,7 @@ type User struct {
 	Birthday string `json:"birthday"`
 }
 
-func main() {
-	// Stop the program if the database connection fails
-	db, err := sql.Open("sqlite3", "./databases/users.db")
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
-
+func setupRouter(db *sql.DB) *gin.Engine {
 	// Using default middleware (logger and recovery)
 	router := gin.Default()
 
@@ -43,7 +36,7 @@ func main() {
 	config.AllowCredentials = true
 	config.MaxAge = 86400
 
-	// router.Use(cors.New(config))
+	router.Use(cors.New(config))
 
 	// Routes
 	// GET all users
@@ -201,6 +194,18 @@ func main() {
 
 		c.IndentedJSON(http.StatusOK, updatedUser)
 	})
+	return router
+}
+
+func main() {
+	// Stop the program if the database connection fails
+	db, err := sql.Open("sqlite3", "./databases/users.db")
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
+	router := setupRouter(db)
 
 	router.Run("localhost:8080")
 }
