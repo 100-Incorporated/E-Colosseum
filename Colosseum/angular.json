@@ -58,6 +58,9 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "angular8:build"
+          },
           "configurations": {
             "production": {
               "browserTarget": "Colosseum:build:production"
