@@ -62,6 +62,41 @@ func add_user(username string, password string, birthday string) {
 	}
 }
 
+func get_user(id int) User {
+	//open database
+	db, err := sql.Open("sqlite3", PATH)
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+	
+	//select user
+	var user User
+	err = db.QueryRow("SELECT * FROM users WHERE id=?", id).Scan(&user.Id, &user.Username, &user.Password, &user.Birthday)
+	if err == sql.ErrNoRows {
+		panic(err)
+	} else if err != nil {
+		panic(err)
+	}
+
+	return user
+
+}
+
+func delete_user(id int) {
+	//open database
+	db, err := sql.Open("sqlite3", PATH)
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+	//delete user
+	_, err = db.Exec("DELETE FROM users WHERE id=?", id)
+	if err != nil {
+		panic(err)
+	}
+
+}
 
 func show_users(path string) {
 	//open database
