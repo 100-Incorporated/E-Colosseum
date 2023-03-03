@@ -14,7 +14,7 @@ We are using a SQLite database to store player information. We need persistence 
 
 Documentation for the E-Colosseum API can be found at
 * [openai.yaml](/backend/openai.yaml)
-* [Swagger](https://app.swaggerhub.com/apis/b-cheek/E-Colosseum-API/1.0.0)
+* [Swagger](https://app.swaggerhub.com/apis/b-cheek/E-Colosseum-API)
 
 # Sprint 2 Frontend
 
