@@ -133,7 +133,17 @@ func TestCreateUser(t *testing.T) {
 
 	// Check the response body is what we expect.
 	expected := `{"id":3,"username":"POSTtest","password":"POSTtest","birthday":"1999-01-01"}`
+	assert.Equal(t, formatJson(expected), w.Body.String(), "Response body mismatch")
 
+	// Check the user was actually created
+	w = httptest.NewRecorder()
+	req, err = http.NewRequest("GET", "/users/3", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	router.ServeHTTP(w, req)
+
+	expected = `{"id":3,"username":"POSTtest","password":"POSTtest","birthday":"1999-01-01"}`
 	assert.Equal(t, formatJson(expected), w.Body.String(), "Response body mismatch")
 }
 
@@ -169,7 +179,19 @@ func TestDeleteUser(t *testing.T) {
 	expected := `{
     "message": "User deleted successfully"
 }`
+	assert.Equal(t, (expected), w.Body.String(), "Response body mismatch")
 
+	// Check the user was actually deleted
+	w = httptest.NewRecorder()
+	req, err = http.NewRequest("GET", "/users/3", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	router.ServeHTTP(w, req)
+
+	expected = `{
+    "message": "User not found"
+}`
 	assert.Equal(t, (expected), w.Body.String(), "Response body mismatch")
 }
 
@@ -203,7 +225,17 @@ func TestPutUser(t *testing.T) {
 
 	// Check the response body is what we expect.
 	expected := `{"id":3,"username":"PUTtest","password":"PUTtest","birthday":"1999-01-01"}`
+	assert.Equal(t, formatJson(expected), w.Body.String(), "Response body mismatch")
 
+	// Check the user was actually updated
+	w = httptest.NewRecorder()
+	req, err = http.NewRequest("GET", "/users/3", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	router.ServeHTTP(w, req)
+
+	expected = `{"id":3,"username":"PUTtest","password":"PUTtest","birthday":"1999-01-01"}`
 	assert.Equal(t, formatJson(expected), w.Body.String(), "Response body mismatch")
 }
 
@@ -237,6 +269,234 @@ func TestPatchUser(t *testing.T) {
 
 	// Check the response body is what we expect.
 	expected := `{"id":3,"username":"PATCHtest","password":"test","birthday":"1999-01-01"}`
-
 	assert.Equal(t, formatJson(expected), w.Body.String(), "Response body mismatch")
+
+	// Check the user was actually updated
+	w = httptest.NewRecorder()
+	req, err = http.NewRequest("GET", "/users/3", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	router.ServeHTTP(w, req)
+
+	expected = `{"id":3,"username":"PATCHtest","password":"test","birthday":"1999-01-01"}`
+	assert.Equal(t, formatJson(expected), w.Body.String(), "Response body mismatch")
+
+	// Check that the user can be updated with multiple fields
+	w = httptest.NewRecorder()
+	req, err = http.NewRequest("PATCH", "/users/3", strings.NewReader(`{"username":"PATCHtest2","password":"PATCHtest2"}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	router.ServeHTTP(w, req)
+
+	// Check the response body is what we expect.
+	expected = `{"id":3,"username":"PATCHtest2","password":"PATCHtest2","birthday":"1999-01-01"}`
+	assert.Equal(t, formatJson(expected), w.Body.String(), "Response body mismatch")
+}
+
+func TestQueryOutOfRange(t *testing.T) {
+	// Setup
+	db, err := sql.Open("sqlite3", "./databases/users.db")
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
+	router := setupRouter(db)
+
+	// GET /users/id
+	// Test that a user that doesn't exist returns a 404
+	w := httptest.NewRecorder()
+	req, err := http.NewRequest("GET", "/users/999", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	router.ServeHTTP(w, req)
+
+	expected := `{
+	"message": "User not found"
+}`
+	assert.Equal(t, (expected), w.Body.String(), "Response body mismatch")
+
+	// DELETE /users/id
+	// Test that a user that doesn't exist returns a 404
+	w = httptest.NewRecorder()
+	req, err = http.NewRequest("DELETE", "/users/999", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	router.ServeHTTP(w, req)
+
+	expected = `{
+	"message": "User not found"
+}`
+	assert.Equal(t, (expected), w.Body.String(), "Response body mismatch")
+
+	// PUT /users/id
+	// Test that a user that doesn't exist returns a 404
+	w = httptest.NewRecorder()
+	req, err = http.NewRequest("PUT", "/users/999", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	router.ServeHTTP(w, req)
+
+	expected = `{
+	"message": "User not found"
+}`
+	assert.Equal(t, (expected), w.Body.String(), "Response body mismatch")
+
+	// PATCH /users/id
+	// Test that a user that doesn't exist returns a 404
+	w = httptest.NewRecorder()
+	req, err = http.NewRequest("PATCH", "/users/999", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	router.ServeHTTP(w, req)
+
+	expected = `{
+    "message": "User not found"
+}`
+	assert.Equal(t, (expected), w.Body.String(), "Response body mismatch")
+}
+
+func TestInvalidRequestBody(t *testing.T) {
+	// Setup
+	db, err := sql.Open("sqlite3", "./databases/users.db")
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
+	router := setupRouter(db)
+
+	// POST /users
+	// Test that an invalid request is handled correctly
+	w := httptest.NewRecorder()
+	// Testing a request with no body
+	req, err := http.NewRequest("POST", "/users", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	router.ServeHTTP(w, req)
+
+	expected := `{
+	"message": "Invalid request body"
+}`
+	assert.Equal(t, (expected), w.Body.String(), "Response body mismatch")
+
+	// Testing a request with an invalid body
+	w = httptest.NewRecorder()
+	req, err = http.NewRequest("POST", "/users", strings.NewReader(`{"username":"test"}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	router.ServeHTTP(w, req)
+
+	expected = `{
+    "message": "Invalid request body"
+}`
+	assert.Equal(t, (expected), w.Body.String(), "Response body mismatch")
+
+	// Testing a response with invalid JSON format
+	w = httptest.NewRecorder()
+	// Note that  a " is missing from the end of the username field
+	req, err = http.NewRequest("POST", "/users", strings.NewReader(`{"username":"test,"password":"test","birthday":"1999-01-01"}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	router.ServeHTTP(w, req)
+
+	expected = `{
+    "message": "Invalid request body"
+}`
+	assert.Equal(t, (expected), w.Body.String(), "Response body mismatch")
+
+	// PUT /users
+	// Test that an invalid request is handled correctly
+	w = httptest.NewRecorder()
+	// Testing a request with no body
+	req, err = http.NewRequest("PUT", "/users", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	router.ServeHTTP(w, req)
+
+	expected = `{
+    "message": "Invalid request body"
+}`
+	assert.Equal(t, (expected), w.Body.String(), "Response body mismatch")
+
+	// Testing a request with an invalid body
+	w = httptest.NewRecorder()
+	// Note that the username field is misspelled
+	req, err = http.NewRequest("POST", "/users", strings.NewReader(`{"usernme":"test"}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	router.ServeHTTP(w, req)
+
+	expected = `{
+    "message": "Invalid request body"
+}`
+	assert.Equal(t, (expected), w.Body.String(), "Response body mismatch")
+
+	// Testing a response with invalid JSON format
+	w = httptest.NewRecorder()
+	// Note that  a " is missing from the end of the username field
+	req, err = http.NewRequest("PUT", "/users", strings.NewReader(`{"username":"test,"password":"test","birthday":"1999-01-01"}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	router.ServeHTTP(w, req)
+
+	expected = `{
+    "message": "Invalid request body"
+}`
+	assert.Equal(t, (expected), w.Body.String(), "Response body mismatch")
+
+	// PATCH /users
+	// Test that an invalid request is handled correctly
+	w = httptest.NewRecorder()
+	// Testing a request with no body
+	req, err = http.NewRequest("PATCH", "/users", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	router.ServeHTTP(w, req)
+
+	expected = `{
+    "message": "Invalid request body"
+}`
+	assert.Equal(t, (expected), w.Body.String(), "Response body mismatch")
+
+	// Testing a request with an invalid body
+	w = httptest.NewRecorder()
+	// Note that the username field is misspelled
+	req, err = http.NewRequest("PATCH", "/users", strings.NewReader(`{"usernme":"test"}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	router.ServeHTTP(w, req)
+
+	expected = `{
+    "message": "Invalid request body"
+}`
+	assert.Equal(t, (expected), w.Body.String(), "Response body mismatch")
+
+	// Testing a response with invalid JSON format
+	w = httptest.NewRecorder()
+	// Note that  a " is missing from the end of the username field
+	req, err = http.NewRequest("PACH", "/users", strings.NewReader(`{"username":"test,"password":"test","birthday":"1999-01-01"}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	router.ServeHTTP(w, req)
+
+	expected = `{
+    "message": "Invalid request body"
+}`
+	assert.Equal(t, (expected), w.Body.String(), "Response body mismatch")
 }

@@ -159,7 +159,7 @@ func setupRouter(db *sql.DB) *gin.Engine {
 		var user User
 		err := db.QueryRow("SELECT * FROM users WHERE id=?", c.Param("id")).Scan(&user.ID, &user.Username, &user.Password, &user.Birthday)
 		if err == sql.ErrNoRows {
-			c.IndentedJSON(http.StatusNotFound, gin.H{"message": "user not found"})
+			c.IndentedJSON(http.StatusNotFound, gin.H{"message": "User not found"})
 			return
 		} else if err != nil {
 			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Internal Server Error"})
