@@ -10,7 +10,7 @@ There should ideally be a way to view the user's current portfolio, but this is 
 There should also be error handling for invalid stock ticker inputs, but for now we will assume the input ticker is the intended one. 
 
 ### Database API
-We will be using a SQLite database to store player information. We need persistence for scores, "cash balance", and basic user information. This database will be seperate from that of the user's stock portfolio. 
+We are using a SQLite database to store player information. We need persistence for scores, "cash balance", and basic user information. This database will be seperate from that of the user's stock portfolio. 
 
 Documentation for the E-Colosseum API can be found at
 * [openai.yaml](/backend/openai.yaml)
