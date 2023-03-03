@@ -16,7 +16,7 @@ import (
 // Function to make JSON list match the format from c.IndentedJSON
 // There is added logic to stop the keys from being alphabetical
 func formatJsonList(jsonString string) string {
-	var users []User
+	var users []UserResponse
 	if err := json.Unmarshal([]byte(jsonString), &users); err != nil {
 		panic(err)
 	}
@@ -41,7 +41,7 @@ func formatJsonList(jsonString string) string {
 }
 
 func formatJson(jsonString string) string {
-	var user User
+	var user UserResponse
 	if err := json.Unmarshal([]byte(jsonString), &user); err != nil {
 		panic(err)
 	}
@@ -315,7 +315,7 @@ func TestQueryOutOfRange(t *testing.T) {
 	router.ServeHTTP(w, req)
 
 	expected := `{
-	"message": "User not found"
+    "message": "User not found"
 }`
 	assert.Equal(t, (expected), w.Body.String(), "Response body mismatch")
 
@@ -329,7 +329,7 @@ func TestQueryOutOfRange(t *testing.T) {
 	router.ServeHTTP(w, req)
 
 	expected = `{
-	"message": "User not found"
+    "message": "User not found"
 }`
 	assert.Equal(t, (expected), w.Body.String(), "Response body mismatch")
 
@@ -343,7 +343,7 @@ func TestQueryOutOfRange(t *testing.T) {
 	router.ServeHTTP(w, req)
 
 	expected = `{
-	"message": "User not found"
+    "message": "User not found"
 }`
 	assert.Equal(t, (expected), w.Body.String(), "Response body mismatch")
 
@@ -383,7 +383,7 @@ func TestInvalidRequestBody(t *testing.T) {
 	router.ServeHTTP(w, req)
 
 	expected := `{
-	"message": "Invalid request body"
+    "message": "Invalid request body"
 }`
 	assert.Equal(t, (expected), w.Body.String(), "Response body mismatch")
 
@@ -415,10 +415,27 @@ func TestInvalidRequestBody(t *testing.T) {
 	assert.Equal(t, (expected), w.Body.String(), "Response body mismatch")
 
 	// PUT /users
-	// Test that an invalid request is handled correctly
+	// Create a user to update
 	w = httptest.NewRecorder()
-	// Testing a request with no body
-	req, err = http.NewRequest("PUT", "/users", nil)
+	req, err = http.NewRequest("POST", "/users", strings.NewReader(`{"username":"test","password":"test","birthday":"1999-01-01"}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	router.ServeHTTP(w, req)
+
+	// Defer the deletion of the user in case the test fails
+	defer func() {
+		w = httptest.NewRecorder()
+		req, err = http.NewRequest("DELETE", "/users/3", nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		router.ServeHTTP(w, req)
+	}()
+
+	// Testing a request with an incomplete body
+	w = httptest.NewRecorder()
+	req, err = http.NewRequest("PUT", "/users/3", strings.NewReader(`{"username":"test"}`))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -432,7 +449,7 @@ func TestInvalidRequestBody(t *testing.T) {
 	// Testing a request with an invalid body
 	w = httptest.NewRecorder()
 	// Note that the username field is misspelled
-	req, err = http.NewRequest("POST", "/users", strings.NewReader(`{"usernme":"test"}`))
+	req, err = http.NewRequest("PUT", "/users/3", strings.NewReader(`{"usernme":"test","password":"test","birthday":"1999-01-01"}`))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -446,7 +463,7 @@ func TestInvalidRequestBody(t *testing.T) {
 	// Testing a response with invalid JSON format
 	w = httptest.NewRecorder()
 	// Note that  a " is missing from the end of the username field
-	req, err = http.NewRequest("PUT", "/users", strings.NewReader(`{"username":"test,"password":"test","birthday":"1999-01-01"}`))
+	req, err = http.NewRequest("PUT", "/users/3", strings.NewReader(`{"username":"test,"password":"test","birthday":"1999-01-01"}`))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -461,7 +478,7 @@ func TestInvalidRequestBody(t *testing.T) {
 	// Test that an invalid request is handled correctly
 	w = httptest.NewRecorder()
 	// Testing a request with no body
-	req, err = http.NewRequest("PATCH", "/users", nil)
+	req, err = http.NewRequest("PATCH", "/users/3", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -475,7 +492,7 @@ func TestInvalidRequestBody(t *testing.T) {
 	// Testing a request with an invalid body
 	w = httptest.NewRecorder()
 	// Note that the username field is misspelled
-	req, err = http.NewRequest("PATCH", "/users", strings.NewReader(`{"usernme":"test"}`))
+	req, err = http.NewRequest("PATCH", "/users/3", strings.NewReader(`{"usernme":"test"}`))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -489,7 +506,7 @@ func TestInvalidRequestBody(t *testing.T) {
 	// Testing a response with invalid JSON format
 	w = httptest.NewRecorder()
 	// Note that  a " is missing from the end of the username field
-	req, err = http.NewRequest("PACH", "/users", strings.NewReader(`{"username":"test,"password":"test","birthday":"1999-01-01"}`))
+	req, err = http.NewRequest("PATCH", "/users/3", strings.NewReader(`{"username":"test,"password":"test","birthday":"1999-01-01"}`))
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -253,12 +253,12 @@ paths:
                       code: 500
                       message: Internal server error
     patch:
-      summary: Update a user by ID
+      summary: Modify a user by ID
       parameters:
         - name: id
           in: path
           required: true
-          description: ID of the user to update
+          description: ID of the user to modify
           schema:
             type: integer
       requestBody:
@@ -266,7 +266,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/UserUpdate'
             examples:
               userFullLogin:
                 value:
@@ -339,6 +339,10 @@ components:
           type: string
         birthday:
           type: string
+      required:
+        - username
+        - password
+        - birthday
     UserResponse:
       type: object
       properties:
@@ -355,6 +359,16 @@ components:
         - username
         - password
         - birthday
+    UserUpdate:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        birthday:
+          type: string
+          
     Error:
       type: object
       properties:
