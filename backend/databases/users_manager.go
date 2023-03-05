@@ -66,7 +66,7 @@ func add_user(username string, password string, birthday string) string {
 	
 }
 
-func get_user(id int) User {
+func get_user(id int) string {
 	//open database
 	db, err := sql.Open("sqlite3", PATH)
 	if err != nil {
@@ -83,8 +83,7 @@ func get_user(id int) User {
 		panic(err)
 	}
 
-	return user
-
+	return user.Username + " " + user.Password + " " + user.Birthday
 }
 
 func delete_user(id int) {
@@ -124,7 +123,32 @@ func show_users(path string) {
 	}
 }
 
-func get_user_by_username(username string) User {
+func get_all_users() []User {
+	//open database
+	db, err := sql.Open("sqlite3", PATH)
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
+	//select all users
+	rows, err := db.Query("SELECT * FROM users")
+	if err != nil {
+		panic(err)
+	}
+	
+	//for each row, print user info
+	var users []User
+	for rows.Next() {
+		var user User
+		rows.Scan(&user.Id, &user.Username, &user.Password, &user.Birthday)
+		users = append(users, user)
+	}
+
+	return users
+}
+
+func get_user_by_username(username string) string {
 	//open database
 	db, err := sql.Open("sqlite3", PATH)
 	if err != nil {
@@ -141,11 +165,11 @@ func get_user_by_username(username string) User {
 		panic(err)
 	}
 
-	return user
+	return username
 
 }
 
-func get_user_by_password(password string) User {
+func get_user_by_password(password string) string {
 	//open database
 	db, err := sql.Open("sqlite3", PATH)
 	if err != nil {
@@ -162,11 +186,11 @@ func get_user_by_password(password string) User {
 		panic(err)
 	}
 
-	return user
+	return user.Username + " " + user.Password + " " + user.Birthday
 
 }
 
-func get_user_by_birthday(birthday string) User {
+func get_user_by_birthday(birthday string) string {
 	//open database
 	db, err := sql.Open("sqlite3", PATH)
 	if err != nil {
@@ -183,7 +207,7 @@ func get_user_by_birthday(birthday string) User {
 		panic(err)
 	}
 
-	return user
+	return user.Username + " " + user.Password + " " + user.Birthday
 
 }
 
@@ -216,12 +240,8 @@ func get_users_over_age(age int) []User {
 func main() {
 	clear_table()
 	create_table()
-	add_user("root", "root", "1999-01-01")
-	add_user("admin", "admin", "1999-01-02")
-	add_user("kiera", "kiera123", "2001-08-12")
-
-	//print users over age 21
-	fmt.Println(get_users_over_age(21))
+	add_user("John", "123", "1990-01-01")
+	add_user("Jane", "456", "1990-01-02")
 
 	show_users(PATH)
 }
