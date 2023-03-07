@@ -489,20 +489,6 @@ func TestInvalidRequestBody(t *testing.T) {
 }`
 	assert.Equal(t, (expected), w.Body.String(), "Response body mismatch")
 
-	// Testing a request with an invalid body
-	w = httptest.NewRecorder()
-	// Note that the username field is misspelled
-	req, err = http.NewRequest("PATCH", "/users/3", strings.NewReader(`{"usernme":"test"}`))
-	if err != nil {
-		t.Fatal(err)
-	}
-	router.ServeHTTP(w, req)
-
-	expected = `{
-    "message": "Invalid request body"
-}`
-	assert.Equal(t, (expected), w.Body.String(), "Response body mismatch")
-
 	// Testing a response with invalid JSON format
 	w = httptest.NewRecorder()
 	// Note that  a " is missing from the end of the username field

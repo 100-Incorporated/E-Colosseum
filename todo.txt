@@ -3,13 +3,3 @@ write unit test to check stock order Submission
 write unit test for player creation
     test for player gain money/win
     test for player lose money/lose
-
-Brayden:
-    Write validation for API endpoints. Use following example:
-    // Validate the User struct
-        if err := validate.Struct(user); err != nil {
-            c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-            return
-        }
-
-    note you have to import "github.com/go-playground/validator/v10"
